@@ -47,7 +47,7 @@ LOCALE_PATHS = (
 
 Usage
 ---
-Don't forget to backup you locales, then run "oneskyapp" command
+Don't forget to backup you locales if already translated, then run "oneskyapp" command
 ```sh
 $ cd /your/django/app 
 $ python manage.py oneskyapp
@@ -74,18 +74,21 @@ How to OneSky?
 - Choose language pairs (according to uploaded translations and your django app settings)
 - Translate or order translation using OneSky
 
+
 - Configure your django app for django-oneskyapp tool
-- Use ```manage.py oneskyapp``` management command to pull, make, push, compile translations
+- Use manage.py oneskyapp management command to pull, make, push, compile translations
 - Restart your django app
+
 
 - Add new strings to your django app
-- Use ```manage.py oneskyapp```
+- Use manage.py oneskyapp
 - Translate using OneSky
-- Use ```manage.py oneskyapp```
+- Use manage.py oneskyapp
 - Restart your django app
 
 
 
-Have fun and feel free to fork on GitHub or send an e-mail to stefan@backor.sk
+Have fun. 
+Feel free to fork on GitHub or send an e-mail to stefan@backor.sk
 
 
