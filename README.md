@@ -47,7 +47,7 @@ LOCALE_PATHS = (
 
 Usage
 ---
-Don't forget to backup you locales if already translated, then run "oneskyapp" command
+Don't forget to backup your locales if already translated, then run "oneskyapp" command
 ```sh
 $ cd /your/django/app 
 $ python manage.py oneskyapp
