@@ -73,11 +73,15 @@ How to OneSky?
 - Upload empty django.po file, or also upload all your translated django.po files and select proper language for them.
 - Choose language pairs (according to uploaded translations and your django app settings)
 - Translate or order translation using OneSky
+
 ---
+
 - Configure your django app for django-oneskyapp tool
 - Use manage.py oneskyapp management command to pull, make, push, compile translations
 - Restart your django app
+
 ---
+
 - Add new strings to your django app
 - Use manage.py oneskyapp
 - Translate using OneSky
