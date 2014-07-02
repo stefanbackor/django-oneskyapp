@@ -167,7 +167,7 @@ class Command(management.base.BaseCommand):
 			"""
 				MAKE
 			"""
-			run_makemessages(verbosity=2)
+			run_makemessages(verbosity=1)
 			
 			"""
 				PUSH
@@ -184,7 +184,7 @@ class Command(management.base.BaseCommand):
 			"""
 				COMPILE
 			"""
-			run_compilemessages(verbosity=2)
+			run_compilemessages(verbosity=1)
 			
 		except OneSkyApiClientException,e:
 			print e
