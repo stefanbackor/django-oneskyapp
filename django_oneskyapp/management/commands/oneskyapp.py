@@ -4,6 +4,7 @@ import os
 import time
 import hashlib
 import requests
+import polib
 
 from django.core import management
 from django.conf import settings
@@ -11,11 +12,11 @@ from django.conf import settings
 
 def run_makemessages(verbosity=0):
 	#TODO: allow passing arguments to makemessages - ignore languages, obsolete, location, domain atc.
-	if isinstance(settings.LANGUAGES,(list,tuple)):
-		language_codes = [language_item[0] for language_item in settings.LANGUAGES]
-		management.call_command('makemessages', locale=language_codes, symlinks=True, verbosity=verbosity)
-	else:
-		management.call_command('makemessages', all=True, symlinks=True, verbosity=verbosity)
+	#if isinstance(settings.LANGUAGES,(list,tuple)):
+	#	language_codes = [language_item[0] for language_item in settings.LANGUAGES]
+	#	management.call_command('makemessages', locale=language_codes, symlinks=True, verbosity=verbosity)
+	#else:
+	management.call_command('makemessages', all=True, symlinks=True, verbosity=verbosity)
 	pass
 
 def run_compilemessages(verbosity=0):
@@ -180,6 +181,16 @@ class Command(management.base.BaseCommand):
 							# Push each local file
 							upload_file_name = os.path.join(locale_path,language_code,"LC_MESSAGES",file_name)
 							if os.path.isfile(upload_file_name):
+								# Remove fuzzy translations using polib (src: http://stackoverflow.com/questions/7372414/removing-all-fuzzy-entries-of-a-po-file)
+								po_file = polib.pofile(upload_file_name)
+								for po_entry in po_file.fuzzy_entries():
+									po_entry.msgstr = ""
+									if po_entry.msgid_plural: po_entry.msgstr_plural["0"] = ""
+									if po_entry.msgid_plural and "1" in po_entry.msgstr_plural: po_entry.msgstr_plural["1"] = ""
+									if po_entry.msgid_plural and "2" in po_entry.msgstr_plural: po_entry.msgstr_plural["2"] = ""
+									po_entry.flags.remove("fuzzy")
+								po_file.save()
+								# Upload to OneSkyx
 								client.file_upload(project_id, upload_file_name, file_format = "GNU_PO", locale = language_code, is_keeping_all_strings=False) # TODO: pass is_keeping_all_strings in command cli call
 			"""
 				COMPILE

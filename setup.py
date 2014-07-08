@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="django-oneskyapp",
-    version='0.1.0',
+    version='0.1.1',
     url='http://github.com/pista329/django-oneskyapp',
     author='Stefan Backor',
     author_email='stefan@backor.sk',
@@ -13,6 +13,7 @@ setup(
     packages=find_packages(exclude='testapp'),
     install_requires=[
         'django>=1.4',
+        'polib>=1.0',
         'requests>=1.0'
     ],
     license='MIT',
