@@ -10,6 +10,11 @@ Instalation
 ```sh
 $ python setup.py install
 ```
+or 
+
+```sh
+$ pip install django-oneskyapp
+```
 
 Configuration
 ---
@@ -58,8 +63,6 @@ Known issues
 - This workflow somehow does not work with django.po files manualy created in OneSky. OneSky API will respond with 400 error "This file is not downloadable through API". When creating OneSky project, always upload empty django.po file, do not create it by adding translation strings "manualy" in OneSky. 
 
 - makemessages exception "CommandError: This script should be run from the Django Git tree or your project or app tree. If you did indeed run it from the Git checkout or your project or application..." Solution: makemessages does not like being run from project root, rather from app root. Change directory to your django app ```cd /your/django/project/app``` then call manage.py with proper path ```python /your/django/project/manage.py oneskyapp;``` If location of your templates is outside app directory, create symlink to your app so makemessages can scan templates through symlink. Same exception issue appers when running makemessages manualy, so again cd to your app dir then call ```manage.py makemessages -a -s``` with proper path and use -s switch to follow symlinks.
-
-
 
 New to OneSky?
 ---
