@@ -49,7 +49,6 @@ class OneSkyApiClient(object):
 		
 	def json_request(self, method = "get", api_path = None, api_params = None, file_stream = None):
 		url = 'https://platform.api.onesky.io/1/' + api_path
-		
 		url_params = {}
 		if isinstance(api_params, dict):
 			url_params = dict([(k, v) for k, v in api_params.items() if v is not None])
@@ -72,7 +71,8 @@ class OneSkyApiClient(object):
 			dest_filename = os.path.join(self.locale_path, filename)
 			try:
 				os.makedirs(os.path.dirname(dest_filename))
-			except Exception,e:
+			except OSError,e:
+				# Ok if path exists
 				pass
 			with open(dest_filename, 'wb') as f:
 				for chunk in response.iter_content():
@@ -83,6 +83,7 @@ class OneSkyApiClient(object):
 				response_output = response.json()
 			except ValueError:
 				response_output = {}
+		
 		return response.status_code, response_output
 	
 	def json_get_request(self, *args, **kwargs):
@@ -116,14 +117,10 @@ class Command(management.base.BaseCommand):
 		self.execute()
 
 	def handle(self, *args, **options):
-		
 		try:
-			
-			"""
-				PULL
-			"""
 			# Locale path and necessary settings
 			locale_path = settings.LOCALE_PATHS[0] if hasattr(settings,"LOCALE_PATHS") and isinstance(settings.LOCALE_PATHS,(list,tuple)) else settings.LOCALE_PATHS if hasattr(settings,"LOCALE_PATHS") else None #os.path.join(settings.BASE_DIR,"locale")
+			
 			if not locale_path:
 				raise OneSkyApiClientException("LOCALE_PATHS not configured properly. Set your path to locale dir in settings.py as string")
 			if not hasattr(settings,"ONESKY_API_KEY") or not hasattr(settings,"ONESKY_API_SECRET"):
@@ -131,9 +128,14 @@ class Command(management.base.BaseCommand):
 			if not hasattr(settings,"ONESKY_PROJECTS") or not isinstance(settings.ONESKY_PROJECTS,list):
 				raise OneSkyApiClientException("ONESKY_PROJECTS not configured properly. Use list of OneSky project ids.")
 			
+			print "Using locale path: %s" % locale_path
+			
 			# Init API client
 			client = OneSkyApiClient(api_key=settings.ONESKY_API_KEY, api_secret=settings.ONESKY_API_SECRET, locale_path=locale_path)
 			
+			"""
+				PULL
+			"""
 			# For each OneSky project..
 			for project_id in settings.ONESKY_PROJECTS:
 				
@@ -160,11 +162,13 @@ class Command(management.base.BaseCommand):
 						if language.get("is_ready_to_publish",None):
 							status, json_response = client.translation_export(project_id,locale=language.get("code"),source_file_name=file_name,export_file_name=export_file_name)
 							if status == 200:
-								print "Saving translation file %s for #%s." % (export_file_name, project_id)
+								print "Saving translation file %s for #%s." % (json_response.get("filename","-No filename in OneSky response-"), project_id)
 							elif status == 204:
 								print OneSkyApiClientException("Unable to download translation file %s for #%s. File has no content. OneSky API status: %s, OneSky API message: %s" % (export_file_name, project_id, status, json_response.get("meta",{}).get("message","")))
 							else:
 								print OneSkyApiClientException("Something went wrong with downloading translation file %s for #%s. OneSky API status: %s, OneSky API message: %s" % (export_file_name, project_id, status, json_response.get("meta",{}).get("message","")))
+						else:
+							print OneSkyApiClientException("Unable to save translation file %s for #%s. Mark it as ready to publish." % (export_file_name, project_id))
 			"""
 				MAKE
 			"""
@@ -190,7 +194,7 @@ class Command(management.base.BaseCommand):
 									if po_entry.msgid_plural and "2" in po_entry.msgstr_plural: po_entry.msgstr_plural["2"] = ""
 									po_entry.flags.remove("fuzzy")
 								po_file.save()
-								# Upload to OneSkyx
+								# Upload to OneSky
 								client.file_upload(project_id, upload_file_name, file_format = "GNU_PO", locale = language_code, is_keeping_all_strings=False) # TODO: pass is_keeping_all_strings in command cli call
 			"""
 				COMPILE
