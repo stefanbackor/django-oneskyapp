@@ -15,7 +15,7 @@ or
 ```sh
 $ pip install django-oneskyapp
 ```
-Note to yourself: "pip install --upgrade --no-deps django-oneskyapp" will upgrade without dependencies :)
+Note to myself: "pip install --upgrade --no-deps django-oneskyapp" will upgrade without dependencies :)
 
 Configuration
 ---
