@@ -12,11 +12,11 @@ from django.conf import settings
 
 def run_makemessages(verbosity=0):
 	#TODO: allow passing arguments to makemessages - ignore languages, obsolete, location, domain atc.
-	#if isinstance(settings.LANGUAGES,(list,tuple)):
-	#	language_codes = [language_item[0] for language_item in settings.LANGUAGES]
-	#	management.call_command('makemessages', locale=language_codes, symlinks=True, verbosity=verbosity)
-	#else:
-	management.call_command('makemessages', all=True, symlinks=True, verbosity=verbosity)
+	if isinstance(settings.LANGUAGES,(list,tuple)):
+		language_codes = [language_item[0] for language_item in settings.LANGUAGES]
+		management.call_command('makemessages', locale=language_codes, symlinks=True, verbosity=verbosity)
+	else:
+		management.call_command('makemessages', all=True, symlinks=True, verbosity=verbosity)
 	pass
 
 def run_compilemessages(verbosity=0):
