@@ -15,6 +15,7 @@ or
 ```sh
 $ pip install django-oneskyapp
 ```
+Note to myself: "pip install --upgrade --no-deps django-oneskyapp" will upgrade without dependencies :)
 
 Configuration
 ---
@@ -76,6 +77,7 @@ How to OneSky?
 - Upload empty django.po file, or also upload all your translated django.po files and select proper language for them.
 - Choose language pairs (according to uploaded translations and your django app settings)
 - Translate or order translation using OneSky
+- Mark translations as "ready to publish"
 
 ---
 
