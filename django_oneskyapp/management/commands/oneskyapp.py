@@ -189,11 +189,17 @@ class Command(management.base.BaseCommand):
 								po_file = polib.pofile(upload_file_name)
 								for po_entry in po_file.fuzzy_entries():
 									po_entry.msgstr = ""
+									if po_entry.previous_msgctxt: po_entry.previous_msgctxt = ""
+									if po_entry.previous_msgid: po_entry.previous_msgid = ""
+									if po_entry.previous_msgid_plural: po_entry.previous_msgid_plural["0"] = ""
+									if po_entry.previous_msgid_plural and "1" in po_entry.previous_msgid_plural: po_entry.previous_msgid_plural["1"] = ""
+									if po_entry.previous_msgid_plural and "2" in po_entry.previous_msgid_plural: po_entry.previous_msgid_plural["2"] = ""
 									if po_entry.msgid_plural: po_entry.msgstr_plural["0"] = ""
 									if po_entry.msgid_plural and "1" in po_entry.msgstr_plural: po_entry.msgstr_plural["1"] = ""
 									if po_entry.msgid_plural and "2" in po_entry.msgstr_plural: po_entry.msgstr_plural["2"] = ""
 									po_entry.flags.remove("fuzzy")
 								po_file.save()
+								
 								# Upload to OneSky
 								client.file_upload(project_id, upload_file_name, file_format = "GNU_PO", locale = language_code, is_keeping_all_strings=False) # TODO: pass is_keeping_all_strings in command cli call
 			"""
