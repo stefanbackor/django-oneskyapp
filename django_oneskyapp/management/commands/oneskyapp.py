@@ -64,7 +64,9 @@ class OneSkyApiClient(object):
 		if method.lower() == "get":
 			response = requests.get(url, params=url_params)
 		elif method.lower() == "post":
-			response = requests.post(url, params=url_params, files={"file": file_stream} if file_stream else None)
+			file_name = url_params["file_name"]
+			del url_params["file_name"]
+			response = requests.post(url, params=url_params, files={"file":(file_name,file_stream)} if file_stream else None)
 		
 		if(response.headers.get('content-disposition', '').startswith('attachment;')):
 			filename = response.headers['content-disposition'].split('=')[1]
@@ -99,7 +101,7 @@ class OneSkyApiClient(object):
 		
 	def file_upload(self, project_id, file_name, file_format = "GNU_PO", locale = None, is_keeping_all_strings=None):
 		with open(file_name, 'rb') as file_stream:
-			return self.json_post_request(api_path="projects/%s/files" % project_id, file_stream=file_stream, api_params={"file_name":file_name, "file_format":file_format, "locale":locale, "is_keeping_all_strings":is_keeping_all_strings})
+			return self.json_post_request(api_path="projects/%s/files" % project_id, file_stream=file_stream, api_params={"file_name":os.path.basename(file_name), "file_format":file_format, "locale":locale, "is_keeping_all_strings":is_keeping_all_strings})
 			
 	def translation_export(self, project_id, locale, source_file_name, export_file_name):
 		return self.json_get_request(api_path="projects/%s/translations" % project_id, api_params={"locale":locale, "source_file_name": source_file_name , "export_file_name": export_file_name})
@@ -153,7 +155,7 @@ class Command(management.base.BaseCommand):
 					if status != 200:
 						print OneSkyApiClientException("Unable to retrieve file list for #%s. OneSky API status: %s, OneSky API message: %s" % (project_id, status, json_response.get("meta",{}).get("message","")))
 					page = json_response.get("meta",{}).get("next_page",None)
-					file_names.extend([file.get("file_name") for file in json_response.get("data",[])])
+					file_names.extend([file.get("file_name") for file in json_response.get("data",[]) if file.get("file_name").endswith(".po")])
 				
 				# Pull each translated file
 				for file_name in file_names:
@@ -188,12 +190,13 @@ class Command(management.base.BaseCommand):
 								# Remove fuzzy translations using polib (src: http://stackoverflow.com/questions/7372414/removing-all-fuzzy-entries-of-a-po-file)
 								po_file = polib.pofile(upload_file_name)
 								for po_entry in po_file.fuzzy_entries():
-									po_entry.msgstr = ""
 									if po_entry.previous_msgctxt: po_entry.previous_msgctxt = ""
 									if po_entry.previous_msgid: po_entry.previous_msgid = ""
 									if po_entry.previous_msgid_plural: po_entry.previous_msgid_plural["0"] = ""
 									if po_entry.previous_msgid_plural and "1" in po_entry.previous_msgid_plural: po_entry.previous_msgid_plural["1"] = ""
 									if po_entry.previous_msgid_plural and "2" in po_entry.previous_msgid_plural: po_entry.previous_msgid_plural["2"] = ""
+									
+									if po_entry.msgstr: po_entry.msgstr = ""
 									if po_entry.msgid_plural: po_entry.msgstr_plural["0"] = ""
 									if po_entry.msgid_plural and "1" in po_entry.msgstr_plural: po_entry.msgstr_plural["1"] = ""
 									if po_entry.msgid_plural and "2" in po_entry.msgstr_plural: po_entry.msgstr_plural["2"] = ""
@@ -201,7 +204,9 @@ class Command(management.base.BaseCommand):
 								po_file.save()
 								
 								# Upload to OneSky
-								client.file_upload(project_id, upload_file_name, file_format = "GNU_PO", locale = language_code, is_keeping_all_strings=False) # TODO: pass is_keeping_all_strings in command cli call
+								if upload_file_name.endswith(".po"):
+									print "Uploading file: %s" % upload_file_name
+									client.file_upload(project_id, upload_file_name, file_format = "GNU_PO", locale = language_code, is_keeping_all_strings=False) # TODO: pass is_keeping_all_strings in command cli call
 			"""
 				COMPILE
 			"""
