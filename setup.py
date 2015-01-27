@@ -14,7 +14,7 @@ setup(
     install_requires=[
         'django>=1.4',
         'polib>=1.0',
-        'requests>=1.0'
+        'requests>=2.0'
     ],
     license='MIT',
     include_package_data=True,
