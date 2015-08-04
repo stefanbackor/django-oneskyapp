@@ -45,7 +45,7 @@ ONESKY_API_SECRET = "its_secret"
 ONESKY_PROJECTS = [project_id] # Included in url as slug when translating or in projects list
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'testapp/locale')
+    os.path.join(BASE_DIR, 'testapp/locale'),
 )
 
 ```
