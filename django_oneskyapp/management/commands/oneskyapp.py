@@ -54,9 +54,9 @@ class OneSkyApiClient(object):
         if isinstance(api_params, dict):
             url_params = dict([(k, v) for k, v in api_params.items() if v is not None])
 
-        timestamp = bytes(int(time.time()))
+        timestamp = str(int(time.time()))
         auth_hash = hashlib.md5()
-        auth_hash.update(timestamp)
+        auth_hash.update(timestamp.encode('utf-8'))
         auth_hash.update(self.api_secret)
         url_params["dev_hash"] = auth_hash.hexdigest()
         url_params["timestamp"] = timestamp
