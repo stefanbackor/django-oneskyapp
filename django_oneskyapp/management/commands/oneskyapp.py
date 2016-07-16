@@ -57,7 +57,7 @@ class OneSkyApiClient(object):
         timestamp = str(int(time.time()))
         auth_hash = hashlib.md5()
         auth_hash.update(timestamp.encode('utf-8'))
-        auth_hash.update(self.api_secret)
+        auth_hash.update(self.api_secret.encode('utf-8'))
         url_params["dev_hash"] = auth_hash.hexdigest()
         url_params["timestamp"] = timestamp
         url_params["api_key"] = self.api_key
