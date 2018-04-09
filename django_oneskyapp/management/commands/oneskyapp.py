@@ -122,10 +122,6 @@ class OneSkyApiClientException(Exception):
 class Command(management.base.BaseCommand):
     help = "Updates your .po translation files using makemessages and uploads them to OneSky translation service. Pushes new translation strings from OneSky to your django app and compiles messages."
 
-    def run_from_argv(self, argv):
-        self._argv = argv
-        self.execute()
-
     def handle(self, *args, **options):
         try:
             # Locale path and necessary settings
