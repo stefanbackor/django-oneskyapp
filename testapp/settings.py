@@ -84,7 +84,7 @@ ONESKY_API_KEY = ""
 ONESKY_API_SECRET = ""
 ONESKY_PROJECTS = [123]
 
-LOCALE_PATHS = (os.path.join(BASE_DIR, 'testapp/locale'))
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'testapp/locale'),)
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'testapp/templates')]
 
 # Static files (CSS, JavaScript, Images)
