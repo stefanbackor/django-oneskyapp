@@ -34,10 +34,10 @@ USE_L10N = True
 _ = lambda s: s
 LANGUAGE_CODE = 'en'
 LANGUAGES = (
-	('en', _('English')),
-	('sk', _('Slovak')),
-	('de-AT', _('German (Austria)')),
-	('pt-BR', _('Portuguese (Brazilian)')),
+    ('en', _('English')),
+    ('sk', _('Slovak')),
+    ('de-AT', _('German (Austria)')),
+    ('pt-BR', _('Portuguese (Brazilian)')),
 )
 
 ONESKY_API_KEY = "my_public_key"
@@ -50,6 +50,17 @@ LOCALE_PATHS = (
 
 ```
 
+Also you can set some extra variables:
+```sh
+ONESKY_LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'testapp/onesky_locale'),
+)
+ONESKY_LANGUAGES = (
+    ('en', _('English')),
+)
+ONESKY_MAKEMESSAGES_COMMAND = 'custom_makemessages'
+ONESKY_COMPILEMESSAGES_COMMAND = 'custom_compilemessages'
+```
 
 Usage
 ---
