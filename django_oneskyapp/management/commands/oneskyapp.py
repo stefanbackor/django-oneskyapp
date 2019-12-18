@@ -340,20 +340,20 @@ class Command(management.base.BaseCommand):
                                     if po_entry.previous_msgid:
                                         po_entry.previous_msgid = ""
                                     if po_entry.previous_msgid_plural:
-                                        po_entry.previous_msgid_plural["0"] = ""
-                                    if po_entry.previous_msgid_plural and "1" in po_entry.previous_msgid_plural:
-                                        po_entry.previous_msgid_plural["1"] = ""
-                                    if po_entry.previous_msgid_plural and "2" in po_entry.previous_msgid_plural:
-                                        po_entry.previous_msgid_plural["2"] = ""
+                                        po_entry.previous_msgid_plural[0] = ""
+                                    if po_entry.previous_msgid_plural and 1 in po_entry.previous_msgid_plural:
+                                        po_entry.previous_msgid_plural[1] = ""
+                                    if po_entry.previous_msgid_plural and 2 in po_entry.previous_msgid_plural:
+                                        po_entry.previous_msgid_plural[2] = ""
 
                                     if po_entry.msgstr:
                                         po_entry.msgstr = ""
                                     if po_entry.msgid_plural:
-                                        po_entry.msgstr_plural["0"] = ""
-                                    if po_entry.msgid_plural and "1" in po_entry.msgstr_plural:
-                                        po_entry.msgstr_plural["1"] = ""
-                                    if po_entry.msgid_plural and "2" in po_entry.msgstr_plural:
-                                        po_entry.msgstr_plural["2"] = ""
+                                        po_entry.msgstr_plural[0] = ""
+                                    if po_entry.msgid_plural and 1 in po_entry.msgstr_plural:
+                                        po_entry.msgstr_plural[1] = ""
+                                    if po_entry.msgid_plural and 2 in po_entry.msgstr_plural:
+                                        po_entry.msgstr_plural[2] = ""
                                     po_entry.flags.remove("fuzzy")
                                 po_file.save()
 
