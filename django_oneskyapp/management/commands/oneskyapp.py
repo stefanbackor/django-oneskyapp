@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import hashlib
 import os
@@ -49,13 +49,13 @@ def run_compilemessages(verbosity=0):
 
 
 """
-    
+
     OneSky's simple python wrapper
-    
+
     Known WTF?:
     - If you manualy create project file (e.g. django.po) inside SkyOne app, API will return 400 error "This file is not downloadable through API"
     - Always upload at least your default django.po language file for each project. 
-    
+
 """
 
 
@@ -96,8 +96,8 @@ class OneSkyApiClient(object):
                 if file_stream else None
             )
 
-        if response.headers.get('content-disposition', '')\
-                           .startswith('attachment;'):
+        if response.headers.get('content-disposition', '') \
+            .startswith('attachment;'):
             filename = response.headers['content-disposition'].split('=')[1]
             dest_filename = os.path.join(self.locale_path, filename)
             try:
@@ -177,7 +177,7 @@ class Command(management.base.BaseCommand):
         try:
             # Locale path and necessary settings
             if (ONESKY_LOCALE_PATHS and
-                    isinstance(ONESKY_LOCALE_PATHS, (list, tuple))):
+                isinstance(ONESKY_LOCALE_PATHS, (list, tuple))):
                 locale_path = ONESKY_LOCALE_PATHS[0]
             elif ONESKY_LOCALE_PATHS:
                 locale_path = ONESKY_LOCALE_PATHS
@@ -242,7 +242,7 @@ class Command(management.base.BaseCommand):
                                 project_id,
                                 status,
                                 json_response.get("meta", {})
-                                             .get("message", "")
+                                    .get("message", "")
                             )
                         ))
                     page = json_response.get("meta", {}).get("next_page", None)
@@ -285,7 +285,7 @@ class Command(management.base.BaseCommand):
                                         project_id,
                                         status,
                                         json_response.get("meta", {})
-                                                     .get("message", "")
+                                            .get("message", "")
                                     )
                                 ))
                             else:
@@ -298,7 +298,7 @@ class Command(management.base.BaseCommand):
                                         project_id,
                                         status,
                                         json_response.get("meta", {})
-                                                     .get("message", "")
+                                            .get("message", "")
                                     )
                                 ))
                         else:
@@ -332,30 +332,14 @@ class Command(management.base.BaseCommand):
                                 file_name
                             )
                             if os.path.isfile(upload_file_name):
-                                # Remove fuzzy translations using polib (src: http://stackoverflow.com/questions/7372414/removing-all-fuzzy-entries-of-a-po-file)
                                 po_file = polib.pofile(upload_file_name)
-                                for po_entry in po_file.fuzzy_entries():
-                                    if po_entry.previous_msgctxt:
-                                        po_entry.previous_msgctxt = ""
-                                    if po_entry.previous_msgid:
-                                        po_entry.previous_msgid = ""
-                                    if po_entry.previous_msgid_plural:
-                                        po_entry.previous_msgid_plural[0] = ""
-                                    if po_entry.previous_msgid_plural and 1 in po_entry.previous_msgid_plural:
-                                        po_entry.previous_msgid_plural[1] = ""
-                                    if po_entry.previous_msgid_plural and 2 in po_entry.previous_msgid_plural:
-                                        po_entry.previous_msgid_plural[2] = ""
-
-                                    if po_entry.msgstr:
-                                        po_entry.msgstr = ""
-                                    if po_entry.msgid_plural:
-                                        po_entry.msgstr_plural[0] = ""
-                                    if po_entry.msgid_plural and 1 in po_entry.msgstr_plural:
-                                        po_entry.msgstr_plural[1] = ""
-                                    if po_entry.msgid_plural and 2 in po_entry.msgstr_plural:
-                                        po_entry.msgstr_plural[2] = ""
-                                    po_entry.flags.remove("fuzzy")
-                                po_file.save()
+                                fuzzy_entries = po_file.fuzzy_entries()
+                                if fuzzy_entries:
+                                    print(
+                                        'Fuzzy translations: %s items' % len(
+                                            fuzzy_entries
+                                        )
+                                    )
 
                                 # Upload to OneSky
                                 if upload_file_name.endswith(".po"):
